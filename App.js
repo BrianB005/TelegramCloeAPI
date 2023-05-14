@@ -55,9 +55,19 @@ app.use("/api/v1/messages", messagesRouter);
 app.use("/api/v1/posts", postsRouter);
 
 io.on("connection", (socket) => {
+  socket.on("userConnected", async (userId) => {
+    try {
+      await User.findByIdAndUpdate(userId, { online: true });
+      socket.userId = userId;
+      io.emit("userOnline", userId);
+      console.log(`User with ID ${userId} just joined`);
+    } catch (error) {
+      console.error("Error updating user online status:", error);
+    }
+  });
   socket.on("newMessage", async (message) => {
     socket.join(socket.id);
-    message.sender = new mongoose.Types.ObjectId(socket.userId);
+
     Message.create(message)
       .then((createdMessage) => {
         return createdMessage.populate("sender recipient", {
@@ -76,16 +86,6 @@ io.on("connection", (socket) => {
           populatedMsg
         );
       });
-  });
-  socket.on("userConnected", async (userId) => {
-    try {
-      await User.findByIdAndUpdate(userId, { online: true });
-      socket.userId = userId;
-      io.emit("userOnline", userId);
-      console.log(`User with ID ${userId} just joined`);
-    } catch (error) {
-      console.error("Error updating user online status:", error);
-    }
   });
 
   socket.on("disconnect", async () => {

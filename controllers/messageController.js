@@ -39,41 +39,69 @@ const getAllChats = async (req, res) => {
     },
 
     {
-      $group: {
-        _id: null,
-        recipient: "$recipient",
-        lastMessage: { $last: "$title" },
-        timeSent: { $last: "$createdAt" },
-        sender: { $last: "$sender" },
+      $sort: {
+        createdAt: -1,
       },
+    },
+    {
       $group: {
-        _id: "$sender",
-
-        lastMessage: { $last: "$title" },
-        timeSent: { $last: "$createdAt" },
-        recipient: { $last: "$recipient" },
-        sender: { $last: "$sender" },
+        _id: {
+          $cond: {
+            if: { $eq: ["$recipient", req.user.userId] },
+            then: "$sender",
+            else: "$recipient",
+          },
+        },
+        title: { $first: "$title" },
+        createdAt: { $first: "$createdAt" },
       },
     },
 
     {
-      $sort: { timeSent: -1 },
+      $sort: { createdAt: -1 },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "_id",
+        foreignField: "_id",
+        as: "user",
+      },
+    },
+
+    {
+      $unwind: "$user",
+    },
+    {
+      $project: {
+        _id: 1,
+        title: 1,
+        createdAt: 1,
+        user: {
+          online: 1,
+          lastSeen: 1,
+          _id: 1,
+          phoneNumber: 1,
+          profilePic: 1,
+          username: 1,
+        },
+      },
     },
   ]);
 
-  const messagess = await Message.populate(groupedMessages, {
-    path: "recipient sender",
-    select: {
-      online: 1,
-      lastSeen: 1,
-      _id: 1,
-      phoneNumber: 1,
-      profilePic: 1,
-      username: 1,
-    },
-  });
+  // const messagess = await Message.populate(groupedMessages, {
+  //   path: "",
+  //   select: {
+  //     online: 1,
+  //     lastSeen: 1,
+  //     _id: 1,
+  //     phoneNumber: 1,
+  //     profilePic: 1,
+  //     username: 1,
+  //   },
+  // });
 
-  res.status(200).json(messagess);
+  res.status(200).json(groupedMessages);
 };
 
 module.exports = {
