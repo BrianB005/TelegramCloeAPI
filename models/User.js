@@ -23,7 +23,6 @@ const UserSchema = new mongoose.Schema(
       required: [true, "You must provide a username"],
     },
     channels: [{ type: mongoose.Types.ObjectId, ref: "Channel" }],
-    chats: [{ type: mongoose.Types.ObjectId, ref: "User" }],
 
     profilePic: {
       type: String,

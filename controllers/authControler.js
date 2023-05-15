@@ -4,8 +4,9 @@ const { userTokenPayload, createJWT } = require("../utils");
 const CustomError = require("../errors");
 
 const createUser = async (req, res) => {
-  let user = await User.find({ phoneNumber: req.body.phoneNumber });
-  if (user.length === 0) {
+  let user = await User.findOne({ phoneNumber: req.body.phoneNumber });
+
+  if (!user) {
     user = await User.create(req.body);
   }
   const tokenUser = userTokenPayload(user);

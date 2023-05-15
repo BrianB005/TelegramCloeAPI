@@ -1,14 +1,8 @@
 const Message = require("../models/Message");
-
+const mongoose = require("mongoose");
 const createMessage = async (req, res, io) => {
-  req.body.sender = req.user.userId;
   const newMessage = await Message.create(req.body);
-  // await User.findByIdAndUpdate(req.body.recipient, {
-  //   $addToSet: { chats: req.user.userId },
-  // });
-  // await User.findByIdAndUpdate(req.user.userId, {
-  //   $addToSet: { chats: req.body.recipient },
-  // });
+
   io.emit("newMessage", newMessage);
   res.status(200).json(newMessage);
 };
@@ -33,9 +27,11 @@ const getAllChats = async (req, res) => {
   const groupedMessages = await Message.aggregate([
     {
       $match: {
-        $or: [{ $recipient: req.user.userId }, { $sender: req.user.userId }],
+        $or: [
+          { recipient: new mongoose.Types.ObjectId(req.user.userId) },
+          { sender: new mongoose.Types.ObjectId(req.user.userId) },
+        ],
       },
-      $match: {},
     },
 
     {
@@ -88,18 +84,6 @@ const getAllChats = async (req, res) => {
       },
     },
   ]);
-
-  // const messagess = await Message.populate(groupedMessages, {
-  //   path: "",
-  //   select: {
-  //     online: 1,
-  //     lastSeen: 1,
-  //     _id: 1,
-  //     phoneNumber: 1,
-  //     profilePic: 1,
-  //     username: 1,
-  //   },
-  // });
 
   res.status(200).json(groupedMessages);
 };
