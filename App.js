@@ -68,24 +68,30 @@ io.on("connection", (socket) => {
   socket.on("newMessage", async (message) => {
     socket.join(socket.id);
 
-    Message.create(message)
-      .then((createdMessage) => {
-        return createdMessage.populate("sender recipient", {
-          online: 1,
-          lastSeen: 1,
-          _id: 1,
-          phoneNumber: 1,
-          profilePic: 1,
-          username: 1,
-        });
-      })
-      .then((populatedMsg) => {
-        io.to(socket.id).emit("messageReceived", populatedMsg);
-        io.to(getRecipientSocketId(message.recipient)).emit(
-          `messageReceived`,
-          populatedMsg
-        );
-      });
+    const savedMessage = await Message.create(message);
+    io.to(socket.id).emit("messageReceived", savedMessage);
+    io.to(getRecipientSocketId(message.recipient)).emit(
+      `messageReceived`,
+      savedMessage
+    );
+    // Message.create(message)
+    //   .then((createdMessage) => {
+    //     return createdMessage.populate("sender recipient", {
+    //       online: 1,
+    //       lastSeen: 1,
+    //       _id: 1,
+    //       phoneNumber: 1,
+    //       profilePic: 1,
+    //       username: 1,
+    //     });
+    //   })
+    //   .then((populatedMsg) => {
+    //     io.to(socket.id).emit("messageReceived", populatedMsg);
+    //     io.to(getRecipientSocketId(message.recipient)).emit(
+    //       `messageReceived`,
+    //       populatedMsg
+    //     );
+    //   });
   });
 
   socket.on("disconnect", async () => {
