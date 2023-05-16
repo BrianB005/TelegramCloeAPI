@@ -6,7 +6,7 @@ const createPost = async (req, res) => {
 };
 
 const getMyChannelPosts = async (req, res) => {
-  const user = await User.findById(req.user.userId);
+  const user = await User.findById(req.user.userId).select("channels");
   const posts = await Promise.all(
     user?.channels?.map((channel) =>
       ChannelPost.find({ channel })
@@ -22,7 +22,9 @@ const getMyChannelPosts = async (req, res) => {
 };
 
 const getChannelPosts = async (req, res) => {
-  const posts = await ChannelPost.find({ channel: req.params.id });
+  const posts = await ChannelPost.find({ channel: req.params.id }).sort(
+    "createdAt"
+  );
 
   res.status(200).json(posts);
 };
