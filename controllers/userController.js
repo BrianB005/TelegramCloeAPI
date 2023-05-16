@@ -31,7 +31,9 @@ const getUsers = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(req.params.id).select(
+    "online lastSeen _id phoneNumber profilePic username"
+  );
   res.status(200).json(user);
 };
 
