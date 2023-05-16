@@ -26,7 +26,9 @@ const deleteAccount = async (req, res) => {
 };
 
 const getUsers = async (req, res) => {
-  const users = await User.find({});
+  const users = await User.find({}).select(
+    "online lastSeen _id phoneNumber profilePic username"
+  );
   res.status(200).json(users);
 };
 
