@@ -15,7 +15,9 @@ const updateUser = async (req, res) => {
 const deleteAccount = async (req, res) => {
   const user = await User.findById(req.user.userId);
   const updatePromises = user?.channels?.map((channelId) =>
-    Channel.findByIdAndUpdate(channelId, { $pull: { members: req.user.userId } })
+    Channel.findByIdAndUpdate(channelId, {
+      $pull: { members: req.user.userId },
+    })
   );
 
   await Promise.all(updatePromises);
@@ -28,8 +30,14 @@ const getUsers = async (req, res) => {
   res.status(200).json(users);
 };
 
+const getUser = async (req, res) => {
+  const user = await User.findById(req.params.id);
+  res.status(200).json(user);
+};
+
 module.exports = {
   updateUser,
   deleteAccount,
   getUsers,
+  getUser,
 };

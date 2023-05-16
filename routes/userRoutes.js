@@ -2,6 +2,7 @@ const {
   updateUser,
   deleteAccount,
   getUsers,
+  getUser,
 } = require("../controllers/userController");
 const { authenticateUser } = require("../middlewares/authentication");
 
@@ -12,4 +13,5 @@ router
   .get(getUsers)
   .delete(authenticateUser, deleteAccount);
 
+router.route("/:id").get(authenticateUser, getUser);
 module.exports = router;
