@@ -29,7 +29,8 @@ const getUsers = async (req, res) => {
   const users = await User.find({}).select(
     "online lastSeen _id phoneNumber profilePic username"
   );
-  res.status(200).json(users);
+  const filtered = users.filter((user) => user._id !== req.user.userId);
+  res.status(200).json(filtered);
 };
 
 const getUser = async (req, res) => {

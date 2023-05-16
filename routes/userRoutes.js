@@ -10,7 +10,7 @@ const router = require("express").Router();
 router
   .route("/")
   .put(authenticateUser, updateUser)
-  .get(getUsers)
+  .get(authenticateUser, getUsers)
   .delete(authenticateUser, deleteAccount);
 
 router.route("/:id").get(authenticateUser, getUser);
