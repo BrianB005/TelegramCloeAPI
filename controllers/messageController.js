@@ -11,12 +11,17 @@ const getSingleChat = async (req, res) => {
   const chatMessages = await Message.find({
     $or: [
       {
-        $and: [{ recipient: req.params.id }, { sender: req.user.userId }],
+        $and: [
+          { recipient: new mongoose.Types.ObjectId(req.params.id) },
+          { sender: new mongoose.Types.ObjectId(req.user.userId) },
+        ],
       },
       {
-        $and: [{ recipient: req.user.userId }, { sender: req.params.id }],
+        $and: [
+          { recipient: new mongoose.Types.ObjectId(req.user.userId) },
+          { sender: new mongoose.Types.ObjectId(req.params.id) },
+        ],
       },
-      {},
     ],
   }).sort("createdAt");
 
