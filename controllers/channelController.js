@@ -88,6 +88,15 @@ const getChannels = async (req, res) => {
   const channels = await Channel.find({});
   res.status(200).json(channels);
 };
+
+const searchChannels = async (req, res) => {
+  const query = req.query.channel;
+  const channels = await Channel.find({
+    name: { $regex: query, $options: "i" },
+  });
+
+  res.status(200).json(channels);
+};
 module.exports = {
   createChannel,
   updateChannel,
@@ -95,4 +104,5 @@ module.exports = {
   joinChannel,
   leaveChannel,
   getChannels,
+  searchChannels
 };

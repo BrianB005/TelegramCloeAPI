@@ -41,10 +41,25 @@ const getUser = async (req, res) => {
   );
   res.status(200).json(user);
 };
+const searchUsers = async (req, res) => {
+  const query = req.query.user;
+  const users = await User.find({
+    $or: [
+      {
+        username: { $regex: query, $options: "i" },
+      },
+      {
+        phoneNumber: { $regex: query, $options: "i" },
+      },
+    ],
+  });
+  res.status(200).json(users);
+};
 
 module.exports = {
   updateUser,
   deleteAccount,
   getUsers,
   getUser,
+  searchUsers
 };

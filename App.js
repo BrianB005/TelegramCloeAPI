@@ -74,24 +74,6 @@ io.on("connection", (socket) => {
       `messageReceived`,
       savedMessage
     );
-    // Message.create(message)
-    //   .then((createdMessage) => {
-    //     return createdMessage.populate("sender recipient", {
-    //       online: 1,
-    //       lastSeen: 1,
-    //       _id: 1,
-    //       phoneNumber: 1,
-    //       profilePic: 1,
-    //       username: 1,
-    //     });
-    //   })
-    //   .then((populatedMsg) => {
-    //     io.to(socket.id).emit("messageReceived", populatedMsg);
-    //     io.to(getRecipientSocketId(message.recipient)).emit(
-    //       `messageReceived`,
-    //       populatedMsg
-    //     );
-    //   });
   });
 
   socket.on("disconnect", async () => {
