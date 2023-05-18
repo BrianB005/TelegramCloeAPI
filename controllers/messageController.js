@@ -31,6 +31,7 @@ const getSingleChat = async (req, res) => {
       phoneNumber: 1,
       profilePic: 1,
       username: 1,
+      isRead:1
     })
     .sort("createdAt");
 
@@ -87,6 +88,7 @@ const getAllChats = async (req, res) => {
         _id: 1,
         title: 1,
         createdAt: 1,
+        isRead:1,
         user: {
           online: 1,
           lastSeen: 1,
