@@ -66,15 +66,27 @@ io.on("connection", (socket) => {
       console.error("Error updating user online status:", error);
     }
   });
-  socket.on("newMessage", async (message) => {
+  socket.on("newMessage", (message) => {
     socket.join(socket.id);
 
-    const savedMessage = await Message.create(message);
-    io.to(socket.id).emit("messageReceived", savedMessage);
-    io.to(getRecipientSocketId(message.recipient)).emit(
-      `messageReceived`,
-      savedMessage
-    );
+    Message.create(message)
+      .then((message) => {
+        return message.populate("sender recipient", {
+          online: 1,
+          lastSeen: 1,
+          _id: 1,
+          phoneNumber: 1,
+          profilePic: 1,
+          username: 1,
+        });
+      })
+      .then((populatedMessage) => {
+        io.to(socket.id).emit("messageReceived", populatedMessage);
+        io.to(getRecipientSocketId(message.recipient)).emit(
+          `messageReceived`,
+          populatedMessage
+        );
+      });
   });
 
   // creating a channel post

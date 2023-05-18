@@ -23,7 +23,9 @@ const getSingleChat = async (req, res) => {
         ],
       },
     ],
-  }).sort("createdAt");
+  })
+    .select("online lastSeen _id phoneNumber profilePic username")
+    .sort("createdAt");
 
   res.status(200).json(chatMessages);
 };
