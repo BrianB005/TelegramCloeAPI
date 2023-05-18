@@ -14,7 +14,6 @@ const createChannel = async (req, res) => {
     },
     { new: true }
   );
-
   await ChannelPost.create({ title: "Channel created", channel: channel._id });
 
   res.status(200).json("Channel created successfully!");

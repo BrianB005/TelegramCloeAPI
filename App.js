@@ -13,6 +13,7 @@ const io = socketIO(server);
 const morgan = require("morgan");
 
 const User = require("./models/User");
+const ChannelPost = require("./models/ChannelPost");
 const Message = require("./models/Message");
 const rateLimiter = require("express-rate-limit");
 const helmet = require("helmet");
@@ -74,6 +75,13 @@ io.on("connection", (socket) => {
       `messageReceived`,
       savedMessage
     );
+  });
+
+  // creating a channel post
+  socket.on("newPost", async (post) => {
+    socket.join(socket.id);
+    const savedPost = await ChannelPost.create(post);
+    io.to(socket.id).emit("postReceived", savedPost);
   });
 
   socket.on("disconnect", async () => {
