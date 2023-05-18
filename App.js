@@ -99,6 +99,7 @@ io.on("connection", (socket) => {
           _id: 1,
           admin: 1,
           icon: 1,
+          members: 1,
         });
       })
       .then((populatedPost) => {

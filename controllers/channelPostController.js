@@ -15,6 +15,7 @@ const getMyChannelPosts = async (req, res) => {
           _id: 1,
           admin: 1,
           icon: 1,
+          members: 1,
         })
         .sort("-createdAt")
         .limit(1)
@@ -29,6 +30,7 @@ const getChannelPosts = async (req, res) => {
       name: 1,
       _id: 1,
       admin: 1,
+      members: 1,
     })
     .sort("createdAt");
 

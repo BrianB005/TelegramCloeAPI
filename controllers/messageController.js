@@ -24,7 +24,14 @@ const getSingleChat = async (req, res) => {
       },
     ],
   })
-    .select("online lastSeen _id phoneNumber profilePic username")
+    .populate("sender recipient", {
+      online: 1,
+      lastSeen: 1,
+      _id: 1,
+      phoneNumber: 1,
+      profilePic: 1,
+      username: 1,
+    })
     .sort("createdAt");
 
   res.status(200).json(chatMessages);
