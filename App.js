@@ -80,8 +80,18 @@ io.on("connection", (socket) => {
   // creating a channel post
   socket.on("newPost", async (post) => {
     socket.join(socket.id);
-    const savedPost = await ChannelPost.create(post);
-    io.to(socket.id).emit("postReceived", savedPost);
+    ChannelPost.create(post)
+      .then((post) => {
+        return post.populate("channel", {
+          name: 1,
+          _id: 1,
+          admin: 1,
+          icon: 1,
+        });
+      })
+      .then((populatedPost) => {
+        io.to(socket.id).emit("postReceived", populatedPost);
+      });
   });
 
   socket.on("disconnect", async () => {

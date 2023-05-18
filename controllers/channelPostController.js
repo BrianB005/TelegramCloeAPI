@@ -25,12 +25,11 @@ const getMyChannelPosts = async (req, res) => {
 
 const getChannelPosts = async (req, res) => {
   const posts = await ChannelPost.find({ channel: req.params.id })
-    // .populate("channel", {
-    //   name: 1,
-    //   _id: 1,
-    //   admin: 1,
-
-    // })
+    .populate("channel", {
+      name: 1,
+      _id: 1,
+      admin: 1,
+    })
     .sort("createdAt");
 
   res.status(200).json(posts);
