@@ -12,6 +12,10 @@ const ChannelSchema = new mongoose.Schema(
       ref: "User",
       required: [true, "You must provide a channel admin"],
     },
+    icon: {
+      type: String,
+      default: "people.png",
+    },
     bio: {
       type: String,
     },
