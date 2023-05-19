@@ -44,14 +44,7 @@ const getUser = async (req, res) => {
 const searchUsers = async (req, res) => {
   const query = req.query.user;
   const users = await User.find({
-    $or: [
-      {
-        username: { $regex: query, $options: "i" },
-      },
-      {
-        phoneNumber: { $regex: query, $options: "i" },
-      },
-    ],
+    username: { $regex: query, $options: "i" },
   }).select("online lastSeen _id phoneNumber profilePic username");
   const filtered = users.filter(
     (user) => user._id.toString() !== req.user.userId
