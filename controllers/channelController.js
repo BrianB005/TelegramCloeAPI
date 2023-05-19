@@ -92,7 +92,7 @@ const searchChannels = async (req, res) => {
   const query = req.query.channel;
   const channels = await Channel.find({
     name: { $regex: query, $options: "i" },
-  });
+  }).select("name _id admin icon members");
 
   res.status(200).json(channels);
 };
@@ -103,5 +103,5 @@ module.exports = {
   joinChannel,
   leaveChannel,
   getChannels,
-  searchChannels
+  searchChannels,
 };

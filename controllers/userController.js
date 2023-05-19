@@ -52,8 +52,11 @@ const searchUsers = async (req, res) => {
         phoneNumber: { $regex: query, $options: "i" },
       },
     ],
-  });
-  res.status(200).json(users);
+  }).select("online lastSeen _id phoneNumber profilePic username");
+  const filtered = users.filter(
+    (user) => user._id.toString() !== req.user.userId
+  );
+  res.status(200).json(filtered);
 };
 
 module.exports = {
@@ -61,5 +64,5 @@ module.exports = {
   deleteAccount,
   getUsers,
   getUser,
-  searchUsers
+  searchUsers,
 };
